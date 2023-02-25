@@ -1,4 +1,4 @@
-![Snowie](/assets/youtube%20video%20converter.png "YouTube-Converter-Banner")
+![Snowie](gbanner.png "Banner")
 
 # Snowie
  
