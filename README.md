@@ -1,4 +1,4 @@
-### Hi there 👋
+<p style="text-align: center;">Text with basic formatting applied</p>
 
 <!--
 **snowydevd/snowydevd** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
