@@ -4,7 +4,6 @@
   <p>My Name is Lautaro Chini, Mostly known as Snowie</p>
   <p>Currently Learning Next.js and its world</p>
 </div>
-<div align="center">
   ### Languages
   [![Python](https://img.shields.io/badge/python-black?style=for-the-badge&logo=python)](https://github.com/wervlad)
   [![JavaScript](https://img.shields.io/badge/javascript-black?style=for-the-badge&logo=javascript)](https://github.com/wervlad)
@@ -17,7 +16,7 @@
   [![Next.js](https://img.shields.io/badge/next.js-black?style=for-the-badge&logo=react)](https://github.com/wervlad)
   [![HTML5](https://img.shields.io/badge/html5-black?style=for-the-badge&logo=html5)](https://hub.docker.com/u/wervlad)
   [![CSS3](https://img.shields.io/badge/css3-black?style=for-the-badge&logo=css3)](https://hub.docker.com/u/wervlad)
-</div>
+
 
 
 
