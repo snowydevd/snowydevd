@@ -1,4 +1,5 @@
-***<p style="text-align: center;">What's Up!</p>***
+***<center>What's Up!</center>***
+
 
 <!--
 **snowydevd/snowydevd** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
