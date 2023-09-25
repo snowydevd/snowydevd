@@ -1,8 +1,8 @@
 <div align="center">
   <h1>What's Up 🤙</h1> 
   
-  <p>My Name is Lautaro Chini, Mostly known as Snowie</p>
-  <p>Currently Learning Next.js and its world</p>
+  <p>My Name is Lautaro Chini</p>
+  
 </div>
 
 ### Languages
