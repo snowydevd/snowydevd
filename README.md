@@ -3,9 +3,9 @@
 
 <p align="left"> <a href="https://github.com/ryo-ma/github-profile-trophy"></a> </p>
 
-- 🔭 I’m currently working on **Aquadelle**
+- 🔭 I’m currently working on **Eminar**
 
-- 🌱 I’m currently learning **RESTful APIs, NodeJS,**
+- 🌱 I’m currently learning **Java, RESTful APIs**
 
 - 💬 Ask me about **React, NextJS, HTML, CSS, Javascript, etc**
 
