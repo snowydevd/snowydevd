@@ -1,5 +1,5 @@
 # 💫 About Me:
-<br><br>    🔭 I’m currently working on FB Scraper<br><br>    🌱 I’m currently learning Java, RESTful APIs<br><br>    💬 Ask me about React, NextJS, HTML, CSS, Javascript, etc<br><br>    📫 How to reach me lautarochinikiba@gmail.com<br>
+<br><br>    🔭 I’m currently working on FocusClimb Deep Focus Learning<br><br>    🌱 I’m currently learning C# and ASP.NET<br><br>    💬 Ask me about React, NextJS, HTML, CSS, Javascript, etc<br><br>    📫 How to reach me lautarochinikiba@gmail.com<br>
 
 
 ## 🌐 Socials:
