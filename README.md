@@ -1,35 +1,17 @@
-<div align="center">
+<a href="https://lautarochini.dev"><img src="assets/hero.svg" width="100%" alt="Lautaro Chini Peyran — Full-Stack Developer · Canelones, Uruguay. Software developer with 5+ years of experience delivering highly efficient web solutions."/></a>
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/dark/header-v1.svg"/><img src="assets/header-v1.svg" alt="Lautaro Chini Peyran"/></picture>
+<a href="https://lautarochini.dev/projects"><img src="assets/btn-work.svg" alt="View my work →"/></a>
+<a href="https://lautarochini.dev/contact"><img src="assets/btn-contact.svg" alt="Get in touch"/></a>
+<a href="https://linkedin.com/in/lautaro-chini-peyran-a88a50173"><img src="assets/link-linkedin.svg" alt="LinkedIn"/></a>
+<a href="mailto:lautarochinikiba@gmail.com"><img src="assets/link-email.svg" alt="Email"/></a>
 
-<a href="https://lautarochini.dev"><picture><source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/badge/PORTFOLIO-0d1117?style=flat-square&logoColor=ffffff"/><img src="https://img.shields.io/badge/PORTFOLIO-ffffff?style=flat-square&logoColor=000000" alt="Portfolio"/></picture></a>
-<a href="https://linkedin.com/in/lautaro-chini-peyran-a88a50173"><picture><source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/badge/LINKEDIN-0d1117?style=flat-square&logo=linkedin&logoColor=ffffff"/><img src="https://img.shields.io/badge/LINKEDIN-ffffff?style=flat-square&logo=linkedin&logoColor=000000" alt="LinkedIn"/></picture></a>
-<a href="mailto:lautarochinikiba@gmail.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/badge/EMAIL-0d1117?style=flat-square"/><img src="https://img.shields.io/badge/EMAIL-ffffff?style=flat-square" alt="Email"/></picture></a>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/work.svg"/><img src="assets/work-light.svg" width="100%" alt="Selected work, built end to end — from the database schema to the last pixel."/></picture>
 
+<div>
+<a href="https://aquadelle.pages.dev"><img src="assets/aquadelle.svg" width="50%" alt="Aquadelle — water purification software for Dellepere Enterprises. TypeScript · Next.js · PostgreSQL"/></a><a href="https://fleteya-frontend.pages.dev"><img src="assets/fleteya.svg" width="50%" alt="FleteYa — freight and logistics marketplace in Uruguay. Next.js · TypeScript · PostgreSQL"/></a>
+<a href="https://gridd.app"><img src="assets/gridd.svg" width="100%" alt="Gridd — mobile app for car meets in Uruguay. React Native · Expo · TypeScript · Convex"/></a>
 </div>
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/dark/s01.svg"/><img src="assets/s01.svg" alt="01 — whoami"/></picture>
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/dark/whoami.svg"/><img src="assets/whoami.svg" alt="About Lautaro"/></picture>
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/dark/s02.svg"/><img src="assets/s02.svg" alt="02 — system map"/></picture>
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/dark/ecosystem.svg"/><img src="assets/ecosystem.svg" alt="Project ecosystem"/></picture>
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/dark/s03.svg"/><img src="assets/s03.svg" alt="03 — projects"/></picture>
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/dark/projects.svg"/><img src="assets/projects.svg" alt="10 projects"/></picture>
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/dark/s04.svg"/><img src="assets/s04.svg" alt="04 — telemetry"/></picture>
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/dark/telemetry.svg"/><img src="assets/telemetry.svg" alt="Animated development telemetry"/></picture>
+<a href="https://lautarochini.dev/contact"><img src="assets/cta.svg" width="100%" alt="Have a project in mind? Let’s talk →"/></a>
 
-<div align="center">
-
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/dark/github-stats.svg"/><img src="assets/github-stats.svg" width="97%" alt="Profile index and repository languages"/></picture>
-
-<picture><source media="(prefers-color-scheme: dark)" srcset="https://github-readme-activity-graph.vercel.app/graph?username=snowydevd&bg_color=00000000&color=ffffff&line=ffffff&point=ffffff&area_color=ffffff&area=true&hide_border=true&radius=0&custom_title=CONTRIBUTION%20TELEMETRY"/><img src="https://github-readme-activity-graph.vercel.app/graph?username=snowydevd&bg_color=00000000&color=000000&line=000000&point=000000&area_color=000000&area=true&hide_border=true&radius=0&custom_title=CONTRIBUTION%20TELEMETRY" width="97%" alt="GitHub contribution activity"/></picture>
-
-</div>
-
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/dark/s05.svg"/><img src="assets/s05.svg" alt="05 — the route"/></picture>
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/dark/timeline.svg"/><img src="assets/timeline.svg" alt="Development timeline"/></picture>
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/dark/experience.svg"/><img src="assets/experience.svg" alt="Professional experience"/></picture>
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/dark/s06.svg"/><img src="assets/s06.svg" alt="06 — stack"/></picture>
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/dark/stack.svg"/><img src="assets/stack.svg" alt="Technical stack"/></picture>
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/dark/footer.svg"/><img src="assets/footer.svg" alt="Current status"/></picture>
-
-<!-- one responsive picture per visual; no duplicate light/dark rendering -->
+<a href="https://lautarochini.dev/contact"><img src="assets/footer.svg" width="100%" alt="Lautaro Chini Peyran © 2026 — Let’s build something together →"/></a>
