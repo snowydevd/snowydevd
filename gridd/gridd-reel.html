@@ -32,7 +32,7 @@
   #box  { position:relative; height:min(100vh, calc(100vw * 16 / 9)); aspect-ratio:9 / 16; }
   @supports (height:100dvh) { #box { height:min(100dvh, calc(100vw * 16 / 9)); } }
   #stage { display:block; width:100%; height:100%; background:var(--bg); }
-  body.playing #box { cursor:none; }
+  body.playing:not(.peek) #box { cursor:none; }
 
   /* guías de zonas seguras de Reels (tecla G) */
   #guides { position:absolute; inset:0; pointer-events:none; }
@@ -1238,10 +1238,12 @@ const $ = id => document.getElementById(id);
 const SCENES = [[0, 'HOOK'], [T.CHAOS, 'PROBLEMA'], [T.SNAP, 'SNAP'], [T.PROD, 'PRODUCTO'], [T.CAR, 'TRANSICIÓN'], [T.LOGO, 'CIERRE']];
 const P = { t: 0, playing: false, start: 0, ended: false, hud: false };
 let peekTimer = 0, recorder = null;
+const PTR = { x: 0, y: 0, x0: 0, y0: 0, quiet: 0 };          // puntero: para que un temblor del mouse no destape los botones al grabar
 
 function setPlaying(v) { P.playing = v; document.body.classList.toggle('playing', v); }
 function play(from = 0, preroll = 0.35) {                   // preroll: un instante de negro para arrancar la grabación limpio
   P.ended = false; P.t = from; P.start = performance.now() + preroll * 1000 - from * 1000; setPlaying(true); document.body.classList.remove('peek');
+  PTR.x0 = PTR.x; PTR.y0 = PTR.y; PTR.quiet = performance.now() + 1500;
 }
 function pause() { if (P.playing) setPlaying(false); else if (!P.ended) { P.start = performance.now() - P.t * 1000; setPlaying(true); } else play(); }
 function seek(t) { setPlaying(false); P.ended = false; P.t = clamp(t, 0, DUR); render(P.t); hud(); }
@@ -1284,9 +1286,17 @@ function boot() {
   $('replay').addEventListener('click', () => play());
   $('rec').addEventListener('click', record);
   if (!cv.captureStream || !window.MediaRecorder) $('rec').hidden = true;
+  // Mientras corre, los botones sólo vuelven si llevás el mouse a la franja de abajo (o tocás la pantalla):
+  // así un movimiento mínimo al apretar Replay no los deja a la vista en la grabación.
   const peek = () => { document.body.classList.add('peek'); clearTimeout(peekTimer); peekTimer = setTimeout(() => document.body.classList.remove('peek'), 1400); };
-  addEventListener('mousemove', peek); addEventListener('pointerdown', peek);   // mover el mouse o tocar la pantalla muestra los botones un instante
+  addEventListener('mousemove', e => {
+    PTR.x = e.clientX; PTR.y = e.clientY;
+    if (performance.now() < PTR.quiet && Math.hypot(PTR.x - PTR.x0, PTR.y - PTR.y0) < 60) return;
+    if (e.clientY > innerHeight * 0.74) peek();
+  });
+  addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') peek(); });
   addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;          // no pisar atajos del navegador
     const k = e.key.toLowerCase();
     if (k === 'r') play();
     else if (k === ' ') { e.preventDefault(); pause(); }
