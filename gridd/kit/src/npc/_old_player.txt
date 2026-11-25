@@ -1,0 +1,87 @@
+/* ══════════ 12 · REPRODUCTOR ══════════ */
+const $ = id => document.getElementById(id);
+const SCENES = [[0, 'HOOK'], [T.CHAOS, 'PROBLEMA'], [T.SNAP, 'SNAP'], [T.PROD, 'PRODUCTO'], [T.CAR, 'TRANSICIÓN'], [T.LOGO, 'CIERRE']];
+const P = { t: 0, playing: false, start: 0, ended: false, hud: false };
+let peekTimer = 0, recorder = null;
+const PTR = { x: 0, y: 0, x0: 0, y0: 0, quiet: 0 };          // puntero: para que un temblor del mouse no destape los botones al grabar
+
+function setPlaying(v) { P.playing = v; document.body.classList.toggle('playing', v); }
+function play(from = 0, preroll = 0.35) {                   // preroll: un instante de negro para arrancar la grabación limpio
+  P.ended = false; P.t = from; P.start = performance.now() + preroll * 1000 - from * 1000; setPlaying(true); document.body.classList.remove('peek');
+  PTR.x0 = PTR.x; PTR.y0 = PTR.y; PTR.quiet = performance.now() + 1500;
+}
+function pause() { if (P.playing) setPlaying(false); else if (!P.ended) { P.start = performance.now() - P.t * 1000; setPlaying(true); } else play(); }
+function seek(t) { setPlaying(false); P.ended = false; P.t = clamp(t, 0, DUR); render(P.t); hud(); }
+function hud() {
+  if (!P.hud) return;
+  const t = P.t, beat = Math.floor(t / BEAT + 1e-6), sc = SCENES.filter(s => t >= s[0]).pop()[1], on = (t / BEAT) % 1 < 0.2;
+  const el = $('hud'); el.classList.toggle('on', on);
+  el.innerHTML = `<b>${t.toFixed(3).padStart(6, '0')} s</b>  f ${String(Math.round(t * FPS)).padStart(4, '0')}\ncompás <b>${Math.floor(beat / 4) + 1}.${beat % 4 + 1}</b>  negra ${beat + 1}  ${BPM} BPM\n${sc}`;
+}
+let lastKey = '';
+function loop(now) {
+  if (P.playing) {
+    P.t = Math.max(0, (now - P.start) / 1000);
+    if (P.t >= DUR) { P.t = DUR; P.ended = true; setPlaying(false); if (recorder) setTimeout(() => recorder && recorder.state === 'recording' && recorder.stop(), 350); }
+  }
+  const gt = P.playing || P.ended ? now / 1000 : P.t;          // el grano sigue vivo sobre el último frame
+  const key = P.t + '|' + Math.floor(gt * 30);
+  if (key !== lastKey) { lastKey = key; render(P.t, gt); hud(); }   // en pausa no se redibuja; al terminar, sólo a 30 fps
+  requestAnimationFrame(loop);
+}
+
+/* Grabación directa del lienzo: sale a 1080×1920 reales aunque la ventana sea más chica. */
+function record() {
+  if (recorder || !cv.captureStream || !window.MediaRecorder) return;
+  const mime = ['video/mp4;codecs=avc1.64002A', 'video/mp4', 'video/webm;codecs=h264', 'video/webm;codecs=vp9', 'video/webm'].find(m => MediaRecorder.isTypeSupported(m));
+  if (!mime) return;
+  const chunks = [], stream = cv.captureStream(FPS);
+  recorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 24e6 });
+  recorder.ondataavailable = e => e.data.size && chunks.push(e.data);
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, { type: mime.split(';')[0] }), a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = 'gridd-reel.' + (mime.includes('mp4') ? 'mp4' : 'webm'); a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000); stream.getTracks().forEach(tr => tr.stop()); recorder = null; $('recdot').hidden = true;
+  };
+  $('recdot').hidden = false; recorder.start(); play(0, 0.5);
+}
+
+function boot() {
+  init();
+  $('replay').addEventListener('click', () => play());
+  $('rec').addEventListener('click', record);
+  if (!cv.captureStream || !window.MediaRecorder) $('rec').hidden = true;
+  // Mientras corre, los botones sólo vuelven si llevás el mouse a la franja de abajo (o tocás la pantalla):
+  // así un movimiento mínimo al apretar Replay no los deja a la vista en la grabación.
+  const peek = () => { document.body.classList.add('peek'); clearTimeout(peekTimer); peekTimer = setTimeout(() => document.body.classList.remove('peek'), 1400); };
+  addEventListener('mousemove', e => {
+    PTR.x = e.clientX; PTR.y = e.clientY;
+    if (performance.now() < PTR.quiet && Math.hypot(PTR.x - PTR.x0, PTR.y - PTR.y0) < 60) return;
+    if (e.clientY > innerHeight * 0.74) peek();
+  });
+  addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') peek(); });
+  addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;          // no pisar atajos del navegador
+    const k = e.key.toLowerCase();
+    if (k === 'r') play();
+    else if (k === ' ') { e.preventDefault(); pause(); }
+    else if (k === 'arrowright' || k === 'arrowleft') { e.preventDefault(); seek(Math.round(P.t * FPS + (k === 'arrowright' ? 1 : -1) * (e.shiftKey ? 10 : 1)) / FPS); }
+    else if (k === 'g') $('guides').hidden = !$('guides').hidden;
+    else if (k === 'b') { P.hud = !P.hud; $('hud').hidden = !P.hud; }
+    else if (k === 'h') document.body.classList.toggle('noui');
+    else if (k === 'f') { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen && document.documentElement.requestFullscreen(); }
+  });
+  if (qs.has('guides')) $('guides').hidden = false;
+  if (qs.has('hud')) { P.hud = true; $('hud').hidden = false; }
+  if (qs.has('noui')) document.body.classList.add('noui');
+  window.GRIDD = { ready: true, seek, play, pause, render, T, DUR, FPS, BPM };
+  const calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;   // si el sistema pide menos movimiento, no arranca solo
+  if (qs.has('t')) seek(parseFloat(qs.get('t')) || 0); else if (calm) { seek(DUR); P.ended = true; } else play(0, 0.25);
+  requestAnimationFrame(loop);
+}
+// las fuentes están declaradas al final del documento: se piden recién cuando el DOM está completo
+const loadFonts = () => document.fonts && document.fonts.load
+  ? Promise.race([Promise.all([document.fonts.load(FD(64), 'GRÍD¿?'), document.fonts.load(FU(32), 'gridd.app')]), new Promise(r => setTimeout(r, 2500))])
+  : Promise.resolve();
+const domReady = new Promise(r => document.readyState === 'loading' ? addEventListener('DOMContentLoaded', r, { once: true }) : r());
+domReady.then(loadFonts).then(boot, boot);

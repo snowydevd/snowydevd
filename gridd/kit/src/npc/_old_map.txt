@@ -1,0 +1,34 @@
+function sprMap() {                                         // mapa simple: costa del Río de la Plata, Montevideo y Canelones
+  const w = 716, h = 1110, s = mk(w, h), x = s.x;
+  x.fillStyle = '#151518'; x.fillRect(0, 0, w, h);
+  // trama urbana tenue alrededor de Montevideo (otra grilla)
+  x.save(); x.translate(292, 432); x.rotate(-0.32);
+  const ug = x.createRadialGradient(0, 0, 20, 0, 0, 215); ug.addColorStop(0, '#2A2A30'); ug.addColorStop(1, 'rgba(42,42,48,0)');
+  x.strokeStyle = ug; x.lineWidth = 1.5;
+  for (let i = -9; i <= 9; i++) { x.beginPath(); x.moveTo(i * 25, -230); x.lineTo(i * 25, 230); x.moveTo(-230, i * 25); x.lineTo(230, i * 25); x.stroke(); }
+  x.restore();
+  // rutas (trazo esquemático)
+  const road = (pts, lw, col) => { x.beginPath(); smooth(x, pts); x.lineWidth = lw; x.strokeStyle = col; x.lineCap = 'round'; x.lineJoin = 'round'; x.stroke(); };
+  road([[252, 432], [150, 408], [60, 396], [-10, 392]], 4, '#2B2B31');                          // al oeste
+  road([[246, 420], [226, 320], [206, 200], [196, 80], [190, -10]], 4, '#2B2B31');              // al norte (Las Piedras)
+  road([[300, 424], [392, 326], [500, 226], [620, 130], [726, 60]], 4, '#2B2B31');              // al noreste (Pando)
+  road([[300, 444], [420, 448], [514, 414], [600, 388], [726, 348]], 4, '#2B2B31');             // al este (costa)
+  road([[196, 80], [330, 96], [470, 190], [600, 300], [676, 362]], 3, '#232328');
+  road([[470, 448], [492, 330], [500, 226]], 3, '#232328');
+  road([[150, 408], [170, 300], [226, 320], [340, 300], [392, 326], [440, 400], [470, 448]], 3, '#232328');
+  // límite departamental (punteado)
+  x.setLineDash([7, 9]); road([[112, 498], [128, 380], [170, 290], [270, 248], [380, 290], [450, 380], [474, 452]], 2, '#45454D'); x.setLineDash([]);
+  // costa + río
+  const coast = [[-10, 502], [60, 512], [116, 500], [150, 472], [168, 452], [176, 420], [196, 399], [224, 404], [236, 430], [226, 462], [250, 486], [268, 520],
+                 [300, 550], [322, 522], [350, 502], [372, 508], [396, 490], [436, 476], [470, 454], [520, 434], [590, 412], [660, 392], [726, 370]];
+  x.beginPath(); smooth(x, coast); x.lineTo(726, h + 10); x.lineTo(-10, h + 10); x.closePath(); x.fillStyle = BG; x.fill();
+  x.fillStyle = 'rgba(214,214,218,0.045)'; for (let i = 1; i < 8; i++) x.fillRect(i * 89.5 - 0.5, 0, 1, h); for (let j = 1; j < 13; j++) x.fillRect(0, j * 89.5 - 0.5, w, 1);
+  [[14, '#1E1E22'], [32, '#18181B'], [54, '#131316']].forEach(([d, col]) => { x.save(); x.translate(0, d); x.beginPath(); smooth(x, coast); x.lineWidth = 2; x.strokeStyle = col; x.stroke(); x.restore(); });
+  x.beginPath(); smooth(x, coast); x.lineWidth = 3; x.strokeStyle = '#4A4A53'; x.stroke();
+  // rótulos
+  x.textBaseline = 'alphabetic'; x.font = FU(23); x.fillStyle = '#6A6A74'; tracked(x, 'MONTEVIDEO', 276, 318, 5, 'center');
+  tracked(x, 'CANELONES', 540, 150, 5, 'center');
+  x.fillStyle = '#34343A'; tracked(x, 'RÍO DE LA PLATA', 452, 650, 9, 'center');
+  return s;
+}
+

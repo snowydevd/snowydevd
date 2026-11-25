@@ -1,0 +1,27 @@
+/* Haces de luz con bordes suaves: degradé radial (distancia) × degradé cónico (ángulo), a 1/4 de resolución.
+   Se mezclan con alpha normal (no aditivo) para que el punto más brillante nunca pase de #DFFF00.
+   list = [[ox, oy, ángulo, semiapertura, largo], …] */
+const HAS_CONIC = typeof ctx.createConicGradient === 'function';
+function softBeams(c, list, alpha) {
+  if (alpha <= 0.004) return;
+  if (!HAS_CONIC) {                                  // navegadores viejos: conos simples
+    for (const [ox, oy, ang, half, len] of list) { const g = c.createRadialGradient(ox, oy, 0, ox, oy, len); g.addColorStop(0, yel(alpha)); g.addColorStop(1, yel(0)); c.fillStyle = g; c.beginPath(); c.moveTo(ox, oy); c.arc(ox, oy, len, ang - half * 0.6, ang + half * 0.6); c.closePath(); c.fill(); }
+    return;
+  }
+  const acc = HB2.x; acc.setTransform(1, 0, 0, 1, 0, 0); acc.globalCompositeOperation = 'source-over'; acc.clearRect(0, 0, 270, 480); acc.globalCompositeOperation = 'lighter';
+  const k = a => `rgba(0,0,0,${a})`;
+  for (const [ox, oy, ang, half, len] of list) {
+    const x = HB.x; x.setTransform(0.25, 0, 0, 0.25, 0, 0); x.globalAlpha = 1; x.globalCompositeOperation = 'source-over'; x.clearRect(0, 0, W, H);
+    const rg = x.createRadialGradient(ox, oy, 0, ox, oy, len);
+    rg.addColorStop(0, yel(1)); rg.addColorStop(0.3, yel(0.7)); rg.addColorStop(0.65, yel(0.3)); rg.addColorStop(1, yel(0));
+    x.fillStyle = rg; x.fillRect(0, 0, W, H);
+    x.globalCompositeOperation = 'destination-in';
+    const cg = x.createConicGradient(ang - Math.PI, ox, oy), hw = half / TAU;
+    cg.addColorStop(0, k(0)); cg.addColorStop(0.5 - hw, k(0)); cg.addColorStop(0.5 - hw * 0.55, k(0.32)); cg.addColorStop(0.5 - hw * 0.22, k(0.85));
+    cg.addColorStop(0.5, k(1)); cg.addColorStop(0.5 + hw * 0.22, k(0.85)); cg.addColorStop(0.5 + hw * 0.55, k(0.32)); cg.addColorStop(0.5 + hw, k(0)); cg.addColorStop(1, k(0));
+    x.fillStyle = cg; x.fillRect(0, 0, W, H);
+    acc.drawImage(HB.c, 0, 0);
+  }
+  const a0 = c.globalAlpha; c.globalAlpha = a0 * alpha; c.drawImage(HB2.c, 0, 0, W, H); c.globalAlpha = a0;
+}
+

@@ -1,0 +1,27 @@
+/* ══════════ 6 · KINETIC TYPOGRAPHY ══════════
+   Texto que sube desde una máscara, por letra o por palabra, con overshoot al llegar y caída seca al salir. */
+function riseText(c, str, x, base, size, color, t, tIn, tOut, o = {}) {
+  const pre = o.pre ?? 0.09;                           // arranca un poco antes para que el «golpe» caiga en el beat
+  if (t < tIn - pre || (tOut !== undefined && t > tOut + 0.3)) return;
+  const font = FD(size), L = lay(str, font), byWord = !!o.byWord;
+  const stg = o.stg ?? (byWord ? 0.07 : 0.018), dur = o.dur ?? 0.3, back = o.back ?? 1.5;
+  c.save();
+  c.beginPath(); c.rect(x - size * 0.25, base - size * 1.4, L.w + size * 0.5, size * 1.4 + size * 0.17); c.clip();
+  c.font = font; c.fillStyle = color; c.textAlign = 'left'; c.textBaseline = 'alphabetic';
+  for (let i = 0; i < L.g.length; i++) {
+    const g = L.g[i]; if (g.ch === ' ') continue;
+    const k = byWord ? g.wi : i, ti = tIn - pre + k * stg, p = prog(t, ti, ti + dur);
+    if (p <= 0) continue;
+    let dy = (1 - E.outBack(p, back)) * size * 1.08;
+    if (tOut !== undefined) { const q = prog(t, tOut + k * (byWord ? 0.02 : 0.004), tOut + k * (byWord ? 0.02 : 0.004) + 0.09); if (q >= 1) continue; dy += E.inCubic(q) * size * 1.25; }
+    if (p < 0.55) { const a0 = c.globalAlpha; c.globalAlpha = a0 * 0.3; c.fillText(g.ch, x + g.x, base + dy + (1 - p) * size * 0.3); c.globalAlpha = a0; }   // smear vertical
+    c.fillText(g.ch, x + g.x, base + dy);
+  }
+  c.restore();
+}
+
+/* Tinta negra sobre amarillo (placas): se dibuja normal y se REDIBUJA después del glow,
+   así el halo no la lava y el contraste queda pleno. */
+const INK = [];
+function ink(c, fn) { fn(); const m = c.getTransform(), a = c.globalAlpha; INK.push(() => { c.setTransform(m); c.globalAlpha = a; fn(); }); }
+

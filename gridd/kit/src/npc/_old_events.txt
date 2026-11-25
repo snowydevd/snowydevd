@@ -1,0 +1,28 @@
+const EVENTS = [   // datos ficticios pero creíbles: Montevideo y Canelones
+  { dow: 'VIE', day: '13', time: '21:30', name: 'NOCHE EN LA RAMBLA', zone: 'Punta Carretas, Montevideo' },
+  { dow: 'SÁB', day: '14', time: '16:00', name: 'CLÁSICOS DEL PRADO', zone: 'Prado, Montevideo' },
+  { dow: 'SÁB', day: '14', time: '19:00', name: 'ATLÁNTIDA SUNSET',   zone: 'Atlántida, Canelones' },
+  { dow: 'DOM', day: '15', time: '10:00', name: 'FIERROS & CAFÉ',     zone: 'Parque Batlle, Montevideo' },
+  { dow: 'DOM', day: '15', time: '15:30', name: 'JUNTADA EL PINAR',   zone: 'El Pinar, Canelones' },
+  { dow: 'VIE', day: '20', time: '22:00', name: 'MEET LAS PIEDRAS',   zone: 'Las Piedras, Canelones' },
+  { dow: 'SÁB', day: '21', time: '17:00', name: 'TARDE DE CLÁSICOS',  zone: 'Ciudad Vieja, Montevideo' },
+];
+function sprCard(ev) {                                       // contenido de una tarjeta (940×220, fondo transparente)
+  const s = mk(940, 220), x = s.x; x.textBaseline = 'alphabetic';
+  x.fillStyle = YEL; rr(x, 20, 20, 152, 180, 14); x.fill();
+  x.fillStyle = BG; x.textAlign = 'center'; x.font = FD(46); x.fillText(ev.dow, 96, 70); x.font = FD(116); x.fillText(ev.day, 96, 180);
+  let fs = 82; while (tw(ev.name, FD(fs)) > 650) fs -= 2;
+  x.textAlign = 'left'; x.fillStyle = K.k9; x.font = FD(fs); x.fillText(ev.name, 204, 106);
+  x.font = FU(41); x.fillText(ev.time, 204, 170);
+  x.fillStyle = K.k7; x.fillText('·  ' + ev.zone, 204 + tw(ev.time + ' ', FU(41)) + 6, 170);
+  x.strokeStyle = K.k6; x.lineWidth = 5; x.lineCap = 'round'; x.lineJoin = 'round'; x.beginPath(); x.moveTo(886, 92); x.lineTo(906, 110); x.lineTo(886, 128); x.stroke();
+  return s;
+}
+function sprCardInk(ev) {                                   // sólo la fecha (tinta negra) para redibujar sobre el halo
+  const s = mk(940, 220), x = s.x; x.textBaseline = 'alphabetic'; x.fillStyle = BG; x.textAlign = 'center';
+  x.font = FD(46); x.fillText(ev.dow, 96, 70); x.font = FD(116); x.fillText(ev.day, 96, 180); return s;
+}
+function cardBox(c, w, h, hot) {
+  rr(c, 0, 0, w, h, 22); c.fillStyle = K.k2; c.fill(); c.lineWidth = 2; c.strokeStyle = K.k4; c.stroke();
+  if (hot > 0.01) { const a = c.globalAlpha; c.globalAlpha = a * Math.min(1, hot); c.lineWidth = 3; c.strokeStyle = YEL; c.stroke(); c.globalAlpha = a; }
+}

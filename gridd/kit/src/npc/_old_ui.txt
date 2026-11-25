@@ -1,0 +1,39 @@
+function drawPin(c, x, y, s, big) {                         // la punta queda en (x, y)
+  const r = (big ? 22 : 17) * s, cy = y - (big ? 42 : 33) * s;
+  c.beginPath(); c.arc(x, cy, r, Math.PI * 0.8, Math.PI * 0.2); c.lineTo(x, y); c.closePath();
+  c.fillStyle = YEL; c.fill(); c.lineWidth = 2.5; c.strokeStyle = BG; c.stroke();
+  c.fillStyle = BG; c.beginPath(); c.arc(x, cy, r * 0.36, 0, TAU); c.fill();
+}
+function tapDot(c, x, y, t, t0) {                           // dedo: aparece, aprieta en t0 y suelta una onda
+  const inn = E.outCubic(prog(t, t0 - 0.16, t0 - 0.03)), out = prog(t, t0 + 0.05, t0 + 0.32);
+  if (inn <= 0 || out >= 1) return;
+  const press = Math.sin(prog(t, t0 - 0.03, t0 + 0.07) * Math.PI), r = lerp(50, 30, inn) * (1 - 0.18 * press);
+  c.save(); c.globalAlpha = inn * (1 - out) * 0.42; c.fillStyle = K.k9; c.beginPath(); c.arc(x, y, r, 0, TAU); c.fill();
+  if (t > t0) { c.globalAlpha = (1 - out) * 0.8; c.strokeStyle = K.k9; c.lineWidth = 3; c.beginPath(); c.arc(x, y, r + E.outCubic(out) * 46, 0, TAU); c.stroke(); }
+  c.restore();
+}
+function chip(c, x, y, label, on, a) {                      // devuelve el ancho
+  c.font = FU(27); const w = tw(label, c.font) + 20 * 1.6 + 8, h = 54;
+  if (a <= 0) return w;
+  const g = c.globalAlpha; c.globalAlpha = g * a;
+  rr(c, x, y, w, h, 27);
+  if (on > 0.5) { c.fillStyle = YEL; c.fill(); } else { c.lineWidth = 2; c.strokeStyle = K.k5; c.stroke(); }
+  c.fillStyle = on > 0.5 ? BG : K.k8; c.textAlign = 'left'; c.textBaseline = 'alphabetic'; tracked(c, label, x + 20, y + 37, 0.8);
+  c.globalAlpha = g; return w;
+}
+
+function wmGeom(size) {                                     // geometría del wordmark GR|DD para un cuerpo dado
+  const font = FD(size); M.font = font;
+  const mGR = M.measureText('GR'), mDD = M.measureText('DD'), wR = M.measureText('R').width, wD = M.measureText('D').width;
+  const bw = Math.round(size * 0.118), ext = size * 0.07, cap = CAP * size, gap = size * 0.06;
+  const grX = -bw / 2 - gap - mGR.actualBoundingBoxRight, ddX = bw / 2 + gap + mDD.actualBoundingBoxLeft;
+  return { size, font, bw, ext, cap, gap, barH: cap + 2 * ext, grX, rX: grX + mGR.width - wR, ddX, d2X: ddX + mDD.width - wD,
+           inkL: grX - mGR.actualBoundingBoxLeft, inkR: ddX + mDD.actualBoundingBoxRight };
+}
+function wordmark(c, cx, base, g, a = 1) {                  // versión estática (header de la app)
+  if (a <= 0) return;
+  const ga = c.globalAlpha; c.globalAlpha = ga * a; c.font = g.font; c.textAlign = 'left'; c.textBaseline = 'alphabetic'; c.fillStyle = K.k9;
+  c.fillText('G', cx + g.grX, base); c.fillText('R', cx + g.rX, base); c.fillText('D', cx + g.ddX, base); c.fillText('D', cx + g.d2X, base);
+  c.fillStyle = YEL; c.fillRect(cx - g.bw / 2, base - g.cap - g.ext, g.bw, g.barH); c.globalAlpha = ga;
+}
+

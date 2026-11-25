@@ -1,0 +1,47 @@
+/* ══════════════════════════════════════════════════════════════════════════════════════
+   POST: destello, glow del amarillo, viñeta y grano
+   ══════════════════════════════════════════════════════════════════════════════════════ */
+function buildPost() {
+  const v = mk(W, H), g = v.x.createRadialGradient(W / 2, H * 0.475, H * 0.23, W / 2, H * 0.475, H * 0.69);
+  g.addColorStop(0, 'rgba(11,11,12,0)'); g.addColorStop(1, 'rgba(11,11,12,0.66)'); v.x.fillStyle = g; v.x.fillRect(0, 0, W, H); A.vig = v;
+  A.grain = [0, 1, 2].map(k => {                            // tres baldosas de ruido que se alternan (grano de ~2 px)
+    const n = mk(256, 256), id = n.x.createImageData(256, 256), R = rng(1000 + k);
+    for (let i = 0; i < id.data.length; i += 4) { const r = R(); if (r < 0.5) { id.data[i] = 214; id.data[i + 1] = 214; id.data[i + 2] = 218; id.data[i + 3] = (0.5 - r) * 2 * GRAIN.light; } else { id.data[i] = 11; id.data[i + 1] = 11; id.data[i + 2] = 12; id.data[i + 3] = (r - 0.5) * 2 * GRAIN.dark; } }
+    n.x.putImageData(id, 0, 0);
+    const s = mk(512, 512); s.x.drawImage(n.c, 0, 0, 512, 512); return ctx.createPattern(s.c, 'repeat');
+  });
+}
+const GRAIN = { light: 17, dark: 24 };                      // intensidad del grano (alpha 0–255). Subilo o bajalo a gusto.
+const GLOW = 0.55;                                          // intensidad del glow del amarillo
+function post(c, t, grainT) {
+  c.setTransform(1, 0, 0, 1, 0, 0); c.globalCompositeOperation = 'source-over';
+  const fa = flashAt(t); if (fa > 0.004) { c.globalAlpha = fa; c.fillStyle = YEL; c.fillRect(0, 0, W, H); }      // destellos (flash de cámara, cortes)
+  c.globalAlpha = 1;
+
+  /* Glow suave SÓLO en el amarillo, sin correr el tono:
+     1) se reduce el frame · 2) se le resta su versión en grises (lo neutro queda en negro) y al resto se le
+     devuelve el tono #DFFF00 · 3) se desenfoca bajando y subiendo de tamaño · 4) se mezcla con «lighten»,
+     que nunca deja pasar un píxel más allá del amarillo de marca. Todo en buffers chicos: una sola pasada a pantalla. */
+  let x = B1.x; x.globalCompositeOperation = 'copy'; x.drawImage(cv, 0, 0, 540, 960);
+  x = B2.x; x.globalCompositeOperation = 'copy'; x.drawImage(B1.c, 0, 0, 270, 480);
+  x = G2.x; x.globalCompositeOperation = 'copy'; x.drawImage(B2.c, 0, 0); x.globalCompositeOperation = 'saturation'; x.fillStyle = '#808080'; x.fillRect(0, 0, 270, 480);
+  x = B2.x; x.globalCompositeOperation = 'difference'; x.drawImage(G2.c, 0, 0);
+  x.globalCompositeOperation = 'color'; x.fillStyle = YEL; x.fillRect(0, 0, 270, 480);
+  x.globalCompositeOperation = 'lighter'; x.drawImage(B2.c, 0, 0); x.drawImage(B2.c, 0, 0);
+  x = B3.x; x.globalCompositeOperation = 'copy'; x.drawImage(B2.c, 0, 0, 135, 240);
+  x = B4.x; x.globalCompositeOperation = 'copy'; x.drawImage(B3.c, 0, 0, 68, 120);
+  x = B5.x; x.globalCompositeOperation = 'copy'; x.drawImage(B4.c, 0, 0, 34, 60);
+  x = U4.x; x.globalCompositeOperation = 'copy'; x.globalAlpha = 1; x.drawImage(B5.c, 0, 0, 68, 120); x.globalCompositeOperation = 'lighten'; x.globalAlpha = 0.8; x.drawImage(B4.c, 0, 0);
+  x = U3.x; x.globalCompositeOperation = 'copy'; x.globalAlpha = 1; x.drawImage(U4.c, 0, 0, 135, 240); x.globalCompositeOperation = 'lighten'; x.globalAlpha = 0.7; x.drawImage(B3.c, 0, 0);
+  x = U2.x; x.globalCompositeOperation = 'copy'; x.globalAlpha = 1; x.drawImage(U3.c, 0, 0, 270, 480); x.globalCompositeOperation = 'lighten'; x.globalAlpha = 0.42; x.drawImage(B2.c, 0, 0);
+  c.globalCompositeOperation = 'lighten'; c.globalAlpha = GLOW; c.drawImage(U2.c, 0, 0, W, H);
+  c.globalCompositeOperation = 'source-over'; c.globalAlpha = 1;
+  for (const f of INK) { c.save(); f(); c.restore(); }      // tinta negra por encima del halo
+  INK.length = 0; c.setTransform(1, 0, 0, 1, 0, 0); c.globalAlpha = 1;
+
+  c.drawImage(A.vig.c, 0, 0);
+  // grano leve, a 30 fps
+  const n = Math.floor(grainT * 30), ox = Math.floor(hash(n * 1.3) * 512), oy = Math.floor(hash(n * 2.9 + 5) * 512);
+  c.translate(-ox, -oy); c.fillStyle = A.grain[n % 3]; c.fillRect(ox, oy, W, H); c.setTransform(1, 0, 0, 1, 0, 0);
+}
+

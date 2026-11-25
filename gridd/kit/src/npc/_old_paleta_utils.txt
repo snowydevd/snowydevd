@@ -1,0 +1,65 @@
+/* ══════════ 2 · PALETA (estricta: negro, amarillo flúo y grises intermedios) ══════════ */
+const BG = '#0B0B0C', YEL = '#DFFF00';
+const yel = a => `rgba(223,255,0,${a})`;
+const K = { k2: '#17171A', k3: '#1F1F23', k4: '#2B2B30', k5: '#3C3C43', k6: '#5A5A63', k7: '#84848E', k8: '#ADADB6', k9: '#D6D6DA' };
+
+/* ══════════ 3 · UTILIDADES ══════════ */
+const TAU = Math.PI * 2, RAD = Math.PI / 180;
+const clamp = (v, a = 0, c = 1) => v < a ? a : v > c ? c : v;
+const lerp = (a, c, u) => a + (c - a) * u;
+const prog = (t, a, c) => clamp((t - a) / (c - a));          // avance 0→1 entre a y c
+
+/* Easing con carácter: entradas rápidas con overshoot (outBack), salidas secas (inCubic/inQuart). Nada lineal. */
+const E = {
+  inQuad: x => x * x,
+  inCubic: x => x * x * x, outCubic: x => 1 - Math.pow(1 - x, 3),
+  inOutCubic: x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2,
+  inQuart: x => x * x * x * x, outQuart: x => 1 - Math.pow(1 - x, 4),
+  outExpo: x => x >= 1 ? 1 : 1 - Math.pow(2, -10 * x),
+  outBack: (x, s = 1.70158) => 1 + (s + 1) * Math.pow(x - 1, 3) + s * Math.pow(x - 1, 2),
+};
+const hash = n => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453123; return s - Math.floor(s); };
+const jit = (id, t, amp, hz = 15) => (hash(id * 13.37 + Math.floor(t * hz) * 7.13) * 2 - 1) * amp;   // temblor «en doses»
+function rng(seed) { let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+const mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return { c, x: c.getContext('2d'), w, h }; };
+function rr(c, x, y, w, h, r) {                      // rectángulo redondeado (path)
+  r = Math.max(0, Math.min(r, w / 2, h / 2));
+  c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r);
+  c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath();
+}
+function smooth(c, pts) {                            // curva suave por una lista de puntos
+  c.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 1; i < pts.length - 1; i++) c.quadraticCurveTo(pts[i][0], pts[i][1], (pts[i][0] + pts[i + 1][0]) / 2, (pts[i][1] + pts[i + 1][1]) / 2);
+  c.lineTo(pts[pts.length - 1][0], pts[pts.length - 1][1]);
+}
+
+/* ── tipografía ── */
+const FAM = '"Barlow Condensed","Arial Narrow","Helvetica Neue Condensed",Impact,sans-serif';
+const FD = s => `900 ${s}px ${FAM}`;                 // display: grotesca bold condensada
+const FU = (s, w = 600) => `${w} ${s}px ${FAM}`;     // interfaz / textos chicos
+const M = mk(4, 4).x;                                // contexto sólo para medir
+const _tw = new Map(), _lay = new Map();
+function tw(str, font) { const k = font + '|' + str; let v = _tw.get(k); if (v === undefined) { M.font = font; v = M.measureText(str).width; _tw.set(k, v); } return v; }
+function lay(str, font) {                            // posición de cada letra respetando el kerning de la fuente
+  const k = font + '|' + str; let L = _lay.get(k);
+  if (!L) { const g = []; let prev = 0, wi = 0; for (let i = 0; i < str.length; i++) { const w = tw(str.slice(0, i + 1), font); if (str[i] === ' ') wi++; g.push({ ch: str[i], x: prev, w: w - prev, wi }); prev = w; } L = { g, w: prev }; _lay.set(k, L); }
+  return L;
+}
+function tracked(c, str, x, y, tr, align = 'left') {  // texto con tracking manual (no depende de ctx.letterSpacing)
+  const L = lay(str, c.font), w = L.w + tr * (str.length - 1);
+  let x0 = align === 'center' ? x - w / 2 : align === 'right' ? x - w : x;
+  const ta = c.textAlign; c.textAlign = 'left';
+  for (let i = 0; i < L.g.length; i++) c.fillText(L.g[i].ch, x0 + L.g[i].x + tr * i, y);
+  c.textAlign = ta; return w;
+}
+let CAP = 0.7;                                       // altura de mayúscula / cuerpo (se mide al iniciar)
+
+/* ══════════ 4 · LIENZOS ══════════ */
+const cv = document.getElementById('stage');
+const ctx = cv.getContext('2d', { alpha: false });
+const HB = mk(270, 480), HB2 = mk(270, 480);         // haces de luz: a un cuarto de resolución (son difusos, no se nota)
+const B1 = mk(540, 960), B2 = mk(270, 480), G2 = mk(270, 480), B3 = mk(135, 240), B4 = mk(68, 120), B5 = mk(34, 60),
+      U4 = mk(68, 120), U3 = mk(135, 240), U2 = mk(270, 480);   // pirámide del glow
+const A = {};                                        // sprites pre-renderizados
+

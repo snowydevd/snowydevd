@@ -1,0 +1,23 @@
+<body>
+
+<div id="wrap"><div id="box">
+  <canvas id="stage" width="1080" height="1920" role="img"
+          aria-label="Animación de Gridd: el caos de grupos, stories y flyers se ordena en una grilla de car meets de Uruguay."></canvas>
+  <div id="guides" hidden><i class="top"><b>NO SEGURO · 15%</b></i><i class="bot"><b>NO SEGURO · 20%</b></i></div>
+</div></div>
+
+<div id="hud" hidden></div>
+<div id="recdot" hidden>● GRABANDO</div>
+
+<div id="ui">
+  <button id="replay" type="button" title="Volver a reproducir (R)">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.7-4"/><path d="M13.6 1.8v2.9h-2.9"/></svg>
+    Replay
+  </button>
+  <button id="rec" type="button" class="ghost" title="Graba el lienzo a 1080×1920 mientras se reproduce y descarga el archivo">
+    <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="5" fill="currentColor"/></svg>
+    Grabar video
+  </button>
+  <span id="keys">R replay · Espacio pausa · ← → cuadro a cuadro · G zonas seguras · B beats · H ocultar · F pantalla completa</span>
+</div>
+

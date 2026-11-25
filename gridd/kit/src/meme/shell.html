@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es-UY">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Gridd — Elegí tu personaje</title>
+<!--
+  GRIDD · «ELEGÍ TU PERSONAJE: edición juntada de autos» · reel cómico 9:16 para Instagram / TikTok
+  ────────────────────────────────────────────────────────────────────────────────────────
+  · Formato de pantalla de selección de juego de pelea: la grilla de Gridd con cinco tipos de gente
+    que hay en toda juntada (el que acelera parado, el del auto de la vieja, el que te explica todo,
+    el que se tira al piso por una foto, el que llega cuando ya terminó) y un casillero bloqueado: VOS.
+  · Lienzo 1080×1920, pensado a 60 fps. Un solo archivo, sin dependencias: abrilo con doble clic.
+  · Todo el dibujo es una función pura del tiempo → render(t): replay, pausa y cuadro a cuadro dan
+    siempre el mismo frame. El guion está en la tabla VO (buscá «GUION»): si se graba la voz del
+    locutor, se cambian las duraciones y toda la línea de tiempo se corre sola.
+  · [SFX] en el código marca dónde va cada efecto de sonido. «Cargar audio» toma una pista que arranca
+    en el segundo 0 (voz, efectos o música), la reproduce sincronizada y «Grabar video» la incluye.
+  · Tipografías: Barlow Condensed 600 y 900 (SIL OFL 1.1), incrustadas al final del archivo.
+
+  Controles:  R = replay · Espacio = pausa · ← → = cuadro a cuadro (Shift ×10)
+              S = carteles sí/no · G = zonas seguras · B = guion en pantalla · H = ocultar botones
+              F = pantalla completa
+  Parámetros: ?t=12.5 (arranca pausado en ese segundo) · ?guides=1 · ?hud=1 · ?noui=1 · ?subs=0
+-->
+<style>
+/*__CSS__*/
+</style>
+</head>
+<body>
+
+<div id="wrap"><div id="box">
+  <canvas id="stage" width="1080" height="1920" role="img"
+          aria-label="Animación de Gridd: pantalla de elegí tu personaje con cinco tipos de gente que hay en toda juntada de autos, y un casillero bloqueado para vos."></canvas>
+  <div id="guides" hidden><i class="top"><b>NO SEGURO · 15%</b></i><i class="bot"><b>NO SEGURO · 20%</b></i></div>
+</div></div>
+
+<div id="hud" hidden></div>
+<div id="recdot" hidden>● GRABANDO</div>
+<audio id="voz" preload="auto"></audio>
+<input id="vozfile" type="file" accept="audio/*" hidden>
+
+<div id="ui">
+  <button id="replay" type="button" title="Volver a reproducir (R)">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.7-4"/><path d="M13.6 1.8v2.9h-2.9"/></svg>
+    <span id="replaylabel">Replay</span>
+  </button>
+  <button id="rec" type="button" class="ghost" title="Graba el lienzo (y el audio, si hay) a 1080×1920 mientras se reproduce y descarga el archivo">
+    <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="5" fill="currentColor"/></svg>
+    Grabar video
+  </button>
+  <button id="vozbtn" type="button" class="ghost" title="Elegí una pista de audio (voz, efectos o música) que arranque en el segundo 0: se reproduce sincronizada">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 2v8M5 5v2M11 5v2M3 8a5 5 0 0 0 10 0M8 13v1.5"/></svg>
+    <span id="vozlabel">Cargar audio</span>
+  </button>
+  <span id="keys">R replay · Espacio pausa · ← → cuadro a cuadro · S carteles · G zonas seguras · B guion · H ocultar · F pantalla completa</span>
+</div>
+
+<script>
+(() => {
+'use strict';
+/*__JS__*/
+})();
+</script>
+
+<!-- Barlow Condensed (c) 2017 The Barlow Project Authors — SIL Open Font License 1.1 · https://github.com/jpt/barlow -->
+<style id="fonts">
+@font-face { font-family:"Barlow Condensed"; font-weight:600; font-style:normal; font-display:block; src:url(data:font/woff2;base64,__FONT_600__) format("woff2"); }
+@font-face { font-family:"Barlow Condensed"; font-weight:900; font-style:normal; font-display:block; src:url(data:font/woff2;base64,__FONT_900__) format("woff2"); }
+</style>
+</body>
+</html>

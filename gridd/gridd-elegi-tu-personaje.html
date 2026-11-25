@@ -1830,6 +1830,14 @@ function buildCam() {                                 // claves de cámara de ca
   for (let i = 0; i < 5; i++) flash(T[SCN[i]] + 0.16, 16, 0.22);          // [SFX] «¡seleccionado!»
 }
 
+/* Momentos internos de cada escena, para sincronizar el audio (tools/export_events.js los guarda en vo_meme/eventos.json) */
+function soundCues() {
+  const steps = (u0, u1, xAt, stride) => { const out = []; let last = -1; for (let i = 0; i <= 600; i++) { const u = u0 + (u1 - u0) * i / 600, ph = Math.floor(xAt(u) / stride); if (ph !== last) { out.push(+u.toFixed(3)); last = ph; } } return out; };
+  return { R1, R2, R4, R5, HOPS, TE: TE(),
+    steps4: steps(R4.walk[0], R4.walk[1], u => 1280 - lerp(1280, -280, (u - R4.walk[0]) / (R4.walk[1] - R4.walk[0])), 118),
+    steps5: steps(0, R5.walk[1], u => lerp(-180, C5.stop, E.outCubic(u / R5.walk[1])) + 180, 96) };
+}
+
 /* ══════════════════════════════════════════════════════════════════════════════════════
    INICIO
    ══════════════════════════════════════════════════════════════════════════════════════ */
@@ -1956,7 +1964,7 @@ function boot() {
   if (qs.has('guides')) $('guides').hidden = false;
   if (qs.has('hud')) { P.hud = true; $('hud').hidden = false; }
   if (qs.has('noui')) document.body.classList.add('noui');
-  window.GRIDD = { ready: true, seek, play, pause, render, T, D, VO, DUR, FPS };
+  window.GRIDD = { ready: true, seek, play, pause, render, T, D, VO, DUR, FPS, X: soundCues() };
   const calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (qs.has('t')) seek(parseFloat(qs.get('t')) || 0);
   else if (calm) { seek(DUR); P.ended = true; }

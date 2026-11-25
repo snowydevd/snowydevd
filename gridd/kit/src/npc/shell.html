@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es-UY">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Gridd — De NPC a car spotter</title>
+<!--
+  GRIDD · «De NPC a car spotter» · animación 2D de personajes, 9:16 para Reels / TikTok
+  ────────────────────────────────────────────────────────────────────────────────────────
+  · Lienzo 1080×1920, pensado a 60 fps. Un solo archivo, sin dependencias: abrilo con doble clic.
+  · La única voz es la del narrador. El guion está en la tabla VO (buscá «GUION»): cada línea trae
+    su texto, su duración y cómo se parte en subtítulos. La línea de tiempo se arma sola a partir
+    de esas duraciones: si regrabás una línea y dura distinto, cambiás su número y todo lo que
+    viene después se corre solo.
+  · La locución va incrustada (MP3) y la línea de tiempo está armada sobre sus duraciones reales:
+    cada palabra del subtítulo entra cuando la voz la dice. Los navegadores no dejan sonar audio
+    sin un clic: si al abrir no suena, tocá «Reproducir». «Grabar video» incluye la voz en el
+    archivo que descarga y «Cambiar voz» permite probar otra pista que arranque en el segundo 0.
+  · Todo el dibujo es una función pura del tiempo → render(t): replay, pausa y avance cuadro a
+    cuadro dan siempre exactamente el mismo frame.
+  · Tipografías: Barlow Condensed 600 y 900 (SIL OFL 1.1), incrustadas al final del archivo.
+
+  Controles:  R = replay · Espacio = pausa · ← → = cuadro a cuadro (Shift ×10)
+              S = subtítulos sí/no · G = zonas seguras · B = guion en pantalla · H = ocultar botones
+              F = pantalla completa
+  Parámetros: ?t=12.5 (arranca pausado en ese segundo) · ?guides=1 · ?hud=1 · ?noui=1 · ?subs=0
+-->
+<style>
+/*__CSS__*/
+</style>
+</head>
+<body>
+
+<div id="wrap"><div id="box">
+  <canvas id="stage" width="1080" height="1920" role="img"
+          aria-label="Animación de Gridd: un personaje sin un peso junta plata, se compra una cámara y termina publicando su propio evento de barridos."></canvas>
+  <div id="guides" hidden><i class="top"><b>NO SEGURO · 15%</b></i><i class="bot"><b>NO SEGURO · 20%</b></i></div>
+</div></div>
+
+<div id="hud" hidden></div>
+<div id="recdot" hidden>● GRABANDO</div>
+<audio id="voz" preload="auto"></audio>
+<input id="vozfile" type="file" accept="audio/*" hidden>
+
+<div id="ui">
+  <button id="replay" type="button" title="Volver a reproducir (R)">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.7-4"/><path d="M13.6 1.8v2.9h-2.9"/></svg>
+    <span id="replaylabel">Replay</span>
+  </button>
+  <button id="rec" type="button" class="ghost" title="Graba el lienzo (y la voz, si hay) a 1080×1920 mientras se reproduce y descarga el archivo">
+    <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="5" fill="currentColor"/></svg>
+    Grabar video
+  </button>
+  <button id="vozbtn" type="button" class="ghost" title="Elegí un archivo de audio con la narración: se reproduce sincronizado desde el segundo 0">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 2v8M5 5v2M11 5v2M3 8a5 5 0 0 0 10 0M8 13v1.5"/></svg>
+    <span id="vozlabel">Cargar voz</span>
+  </button>
+  <span id="keys">R replay · Espacio pausa · ← → cuadro a cuadro · S subtítulos · G zonas seguras · B guion · H ocultar · F pantalla completa</span>
+</div>
+
+<script>
+(() => {
+'use strict';
+/*__JS__*/
+})();
+</script>
+
+<!-- Barlow Condensed (c) 2017 The Barlow Project Authors — SIL Open Font License 1.1 · https://github.com/jpt/barlow -->
+<style id="fonts">
+@font-face { font-family:"Barlow Condensed"; font-weight:600; font-style:normal; font-display:block; src:url(data:font/woff2;base64,__FONT_600__) format("woff2"); }
+@font-face { font-family:"Barlow Condensed"; font-weight:900; font-style:normal; font-display:block; src:url(data:font/woff2;base64,__FONT_900__) format("woff2"); }
+</style>
+</body>
+</html>

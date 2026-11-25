@@ -1,0 +1,9 @@
+out/
+vo/
+vo_meme/
+*.mp4
+*.wav
+*.mp3
+*.pcm
+node_modules/
+__pycache__/

@@ -1,0 +1,47 @@
+const carTop = x => {                                                        // contorno superior (se usa dos veces: silueta y contraluz)
+  x.bezierCurveTo(2, -52, 2, -80, 8, -104); x.lineTo(18, -128); x.lineTo(30, -134);
+  x.bezierCurveTo(60, -138, 96, -140, 126, -142);
+  x.bezierCurveTo(186, -162, 236, -178, 296, -178);
+  x.bezierCurveTo(340, -178, 384, -166, 428, -136);
+  x.bezierCurveTo(492, -130, 566, -118, 606, -102);
+  x.bezierCurveTo(626, -94, 636, -78, 636, -60);
+};
+function carPath(x) {                                       // silueta genérica de coupé, sin marca ni logo
+  x.beginPath(); x.moveTo(8, -40); carTop(x); x.lineTo(632, -40);
+  x.bezierCurveTo(630, -32, 624, -30, 614, -30); x.lineTo(586, -30);
+  x.arc(524, -48, 62, 0.29, Math.PI - 0.29, true); x.lineTo(194, -30);
+  x.arc(132, -48, 62, 0.29, Math.PI - 0.29, true); x.lineTo(22, -30);
+  x.bezierCurveTo(14, -30, 10, -34, 8, -40); x.closePath();
+}
+function sprCar(soft) {                                    // soft = sólo la masa del auto, para los ecos del motion blur
+  const pad = 24, s = mk(Math.ceil((640 + pad * 2) * CS), Math.ceil(216 * CS)), x = s.x;
+  s.ox = pad * CS; s.oy = 198 * CS;                          // dónde queda el (0,0) del auto adentro del sprite
+  x.translate(s.ox, s.oy); x.scale(CS, CS); x.lineJoin = 'round'; x.lineCap = 'round';
+  carPath(x); x.fillStyle = '#1F1F23'; x.fill();
+  if (soft) { x.fillStyle = '#0E0E10'; for (const wx of [132, 524]) { x.beginPath(); x.arc(wx, -50, 50, 0, TAU); x.fill(); } return s; }
+  x.save(); x.clip();
+  x.fillStyle = '#16161A'; x.fillRect(0, -70, 640, 44);        // zócalo más oscuro
+  x.strokeStyle = '#3A3A41'; x.lineWidth = 2.5; x.beginPath(); x.moveTo(10, -106); x.bezierCurveTo(200, -114, 440, -108, 630, -86); x.stroke();   // línea de cintura
+  x.strokeStyle = '#2B2B30'; x.lineWidth = 2; x.beginPath(); x.moveTo(200, -36); x.lineTo(456, -36); x.stroke();                                // zócalo
+  x.strokeStyle = '#111113'; x.lineWidth = 2.5; x.beginPath(); x.moveTo(290, -140); x.lineTo(286, -34); x.moveTo(436, -132); x.lineTo(444, -40); x.stroke();   // puertas
+  x.restore();
+  // ventanillas
+  x.beginPath(); x.moveTo(158, -144); x.bezierCurveTo(208, -162, 250, -169, 296, -169); x.bezierCurveTo(334, -169, 372, -160, 412, -139); x.closePath(); x.fillStyle = BG; x.fill();
+  x.fillStyle = '#1F1F23'; x.beginPath(); x.moveTo(282, -171); x.lineTo(294, -171); x.lineTo(290, -138); x.lineTo(278, -138); x.closePath(); x.fill();
+  x.strokeStyle = '#2B2B30'; x.lineWidth = 3; x.beginPath(); x.moveTo(206, -152); x.lineTo(244, -163); x.moveTo(326, -161); x.lineTo(366, -148); x.stroke();   // reflejos
+  // contraluz: sólo el contorno superior
+  x.beginPath(); x.moveTo(8, -40); carTop(x); x.strokeStyle = '#A4A4AE'; x.lineWidth = 2.6; x.stroke();
+  // luces (amarillo)
+  x.fillStyle = YEL; x.beginPath(); x.moveTo(6, -104); x.lineTo(16, -126); x.lineTo(30, -126); x.lineTo(24, -104); x.closePath(); x.fill();           // trasera
+  x.beginPath(); x.moveTo(598, -103); x.bezierCurveTo(618, -98, 632, -88, 635, -72); x.lineTo(612, -82); x.closePath(); x.fill();                      // delantera
+  x.fillStyle = K.k6; x.fillRect(304, -126, 24, 4);            // manija
+  return s;
+}
+function drawWheel(c, x, y, ang, sp) {
+  const a0 = c.globalAlpha;
+  c.fillStyle = '#0E0E10'; c.beginPath(); c.arc(x, y, 50, 0, TAU); c.fill(); c.lineWidth = 2; c.strokeStyle = K.k4; c.stroke();
+  c.fillStyle = K.k2; c.beginPath(); c.arc(x, y, 33, 0, TAU); c.fill(); c.lineWidth = 3; c.strokeStyle = K.k6; c.stroke();
+  const n = sp > 300 ? 5 : 1; c.strokeStyle = K.k7; c.lineWidth = 4.5; c.globalAlpha = a0 * (sp > 300 ? 0.3 : 1);   // rayos barridos por la velocidad
+  for (let k = 0; k < n; k++) for (let i = 0; i < 5; i++) { const a = ang + i * TAU / 5 - k * 0.2; c.beginPath(); c.moveTo(x + Math.cos(a) * 8, y + Math.sin(a) * 8); c.lineTo(x + Math.cos(a) * 30, y + Math.sin(a) * 30); c.stroke(); }
+  c.globalAlpha = a0; c.fillStyle = K.k8; c.beginPath(); c.arc(x, y, 6, 0, TAU); c.fill();
+}
